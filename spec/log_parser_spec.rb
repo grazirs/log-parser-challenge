@@ -1,4 +1,4 @@
-require "main"
+require "log_parser"
 describe LogParser do
     context "call print_first_line" do
         it "prints first line" do
@@ -10,7 +10,7 @@ describe LogParser do
     end
 
     context "games.log does not exist" do
-        it "prints file not found" do
+        it "print file not found" do
             log_parser = LogParser.new("game.log")
             expect do
                 log_parser.print_first_line

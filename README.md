@@ -16,3 +16,4 @@ More details: https://www.ruby-lang.org/pt/documentation/installation/
 ## Tests
 
 To run the tests you need to install Bundler. Open a terminal window and run this command: ```$ bundle install```.  To execute the tests run this command as well: ```$ bundle exec rspec```.
+
