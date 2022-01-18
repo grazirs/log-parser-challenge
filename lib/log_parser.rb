@@ -1,15 +1,17 @@
+require "json"
 class LogParser
-    def initialize(file_name)
-        @file_name = file_name
+    def initialize(file_path)
+        @file_path = file_path
     end
 
-    def print_first_line
+    def get_log_data
         begin
-            file = File.open(@file_name)
+            file = File.open(@file_path)
             file_data = file.readlines.map(&:chomp)
-            first_line = file_data[0]
+            lines_number = file_data.length
             file.close
-            puts first_line
+            data = {:lines => lines_number}
+            '"%{file_name}": %{json}' % {file_name:File.basename(@file_path), json:JSON.pretty_generate(data)}
         rescue => exception
             puts "File not found"
         end
