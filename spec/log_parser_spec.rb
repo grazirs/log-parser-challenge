@@ -1,11 +1,10 @@
 require "log_parser"
 describe LogParser do
-    context "call print_first_line" do
-        it "prints first line" do
+    context "call get_first_line" do
+        it "gets first line" do
             log_parser = LogParser.new("spec/fixtures/game_test.log")
-            expect do
-                log_parser.print_first_line
-            end.to output("  0:00 ------------------------------------------------------------\n").to_stdout
+            first_line = log_parser.get_first_line
+            expect(first_line).to eq("  0:00 ------------------------------------------------------------")
         end
     end
 
@@ -13,7 +12,7 @@ describe LogParser do
         it "print file not found" do
             log_parser = LogParser.new("game.log")
             expect do
-                log_parser.print_first_line
+                log_parser.get_first_line
             end.to output("File not found\n").to_stdout
         end
     end

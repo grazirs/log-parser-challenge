@@ -13,7 +13,11 @@ Installers can be used to install a specific version of Ruby or even several of 
 - And finally, you can also compile Ruby from source code.
 More details: https://www.ruby-lang.org/pt/documentation/installation/
 
+## Run
+
+Open a terminal and execute this command to run: ```ruby main.rb```
+
+
 ## Tests
 
-To run the tests you need to install Bundler. Open a terminal window and run this command: ```$ bundle install```.  To execute the tests run this command as well: ```$ bundle exec rspec```.
-
+To run the tests you need to install Bundler. Open a terminal window and run this command: ```bundle install```.  To execute the tests run this command as well: ```bundle exec rspec```.

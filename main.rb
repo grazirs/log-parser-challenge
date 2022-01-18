@@ -1,3 +1,3 @@
 require_relative "lib/log_parser"
 log_parser = LogParser.new("games.log")
-log_parser.print_first_line
+puts log_parser.get_first_line
