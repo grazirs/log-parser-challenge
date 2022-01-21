@@ -6,8 +6,8 @@ describe LogParser do
       output = log_parser.get_log_data
       expect(output).to start_with('"game_test.log":')
       json_data = JSON.parse(output[17, output.length-1])
-      expect(json_data['lines']).to eq(51)
-      expect(json_data['players']).to eq(["Isgalamido", "<world>", "Dono da Bola", "Mocinha"])
+      expect(json_data['lines']).to eq(52)
+      expect(json_data['players']).to eq(["Isgalamido", "<world>", "Dono da Bola", "Mocinha", "UnnamedPlayer"])
     end
   end
 

@@ -27,13 +27,3 @@ class LogParser
       '"%{file_name}": %{json}' % {file_name:File.basename(@file_path), json:JSON.pretty_generate(data)}
     end
 end
-
-
-
-# const data = ['ciao 1', 'amore', 'dove', 'ciao2', 'mare'];
-
-# data.foreach((element){
-#   if (element.contains('ciao'))
-#     console.log(element);
-  
-# });
