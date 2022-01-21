@@ -12,9 +12,17 @@ class LogParser
   end
 
   def get_log_data
-    lines_number = @file_data.length
     @file.close
-    data = {:lines => lines_number}
-    '"%{file_name}": %{json}' % {file_name:File.basename(@file_path), json:JSON.pretty_generate(data)}
+    data = {:lines => self.file_length}
+    '"%{file_name}": %{json}' % {file_name: self.file_name, json:JSON.pretty_generate(data)}
+  end
+
+  private
+  def file_length
+    @file_data.length
+  end
+
+  def file_name
+    File.basename(@file_path)
   end
 end
