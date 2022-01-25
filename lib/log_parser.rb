@@ -5,6 +5,7 @@ class LogParser
     raise "File not found" unless File.exists?(@file_path)
     @file = File.open(@file_path)
     @file_data = @file.readlines.map(&:chomp)
+    @file.close
   end
 
   def get_first_line
@@ -12,9 +13,8 @@ class LogParser
   end
 
   def get_log_data
-    @file.close
     data = {:lines => file_length}
-    '"%{file_name}": %{json}' % {file_name: file_name, json:JSON.pretty_generate(data)}
+    '"%{file_name}": %{json}' % { file_name: file_name, json: JSON.pretty_generate(data) }
   end
 
   private
