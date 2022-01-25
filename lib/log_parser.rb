@@ -28,14 +28,6 @@ class LogParser
       end
     end
     data = { lines: file_length, players: players.uniq}
-  end
-
-  def get_first_line
-    first_line = @file_data[0]
-  end
-
-  def get_log_data
-    data = {:lines => file_length}
     '"%{file_name}": %{json}' % { file_name: file_name, json: JSON.pretty_generate(data) }
   end
 
