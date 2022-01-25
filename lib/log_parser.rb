@@ -1,4 +1,5 @@
 require "json"
+
 class LogParser
   def initialize(file_path)
     @file_path = file_path
@@ -27,6 +28,14 @@ class LogParser
       end
     end
     data = { lines: file_length, players: players.uniq}
+  end
+
+  def get_first_line
+    first_line = @file_data[0]
+  end
+
+  def get_log_data
+    data = {:lines => file_length}
     '"%{file_name}": %{json}' % { file_name: file_name, json: JSON.pretty_generate(data) }
   end
 
@@ -35,7 +44,7 @@ class LogParser
   def file_length
     @file_data.length
   end
-  
+
   def file_name
     File.basename(@file_path)
   end
