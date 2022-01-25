@@ -26,8 +26,8 @@ class LogParser
         players.push(player)
       end
     end
-    data = {:lines => self.file_length, :players => players.uniq}
-    '"%{file_name}": %{json}' % {file_name: self.file_name, json: JSON.pretty_generate(data)}
+    data = { lines: file_length, players: players.uniq}
+    '"%{file_name}": %{json}' % { file_name: file_name, json: JSON.pretty_generate(data) }
   end
 
   private
