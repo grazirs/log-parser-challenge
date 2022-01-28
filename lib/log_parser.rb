@@ -29,7 +29,7 @@ class LogParser
   end
 
   private
-
+  
   def file_length
     @file_data.length
   end
