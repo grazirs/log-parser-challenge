@@ -11,7 +11,6 @@ class LogParser
     @file_path = file_path
     @file_data = File.readlines(@file_path, chomp: true)
     @players = []
-    @kills = {}
   end
 
   def first_line
@@ -19,12 +18,11 @@ class LogParser
   end
 
   def log_data
-    total_kills = 0
     @file_data.each do |line|
-      total_kills += player_kills(line)
+      player_kills(line)
       player_info(line)
     end
-    data = { lines: file_length, players: @players.uniq, kills: @kills, total_kills: }
+    data = { lines: file_length, players: @players.uniq }
     format('"%<file_name>s": %<json>s', file_name:, json: JSON.pretty_generate(data))
   end
 
@@ -39,15 +37,11 @@ class LogParser
   end
 
   def player_kills(line)
-    return 0 unless line.match(KILL_LINE_REGEX)
+    return unless line.match(KILL_LINE_REGEX)
 
     player_one = line[KILL_LINE_REGEX, 1]
     player_two = line[KILL_LINE_REGEX, 2]
     @players += [player_one, player_two].reject { |player| player == '<world>' }
-    return 0 unless player_one != '<world>'
-
-    @kills[player_one] = @kills.fetch(player_one, 0) + 1
-    1
   end
 
   def player_info(line)

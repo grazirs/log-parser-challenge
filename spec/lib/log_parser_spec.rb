@@ -39,13 +39,5 @@ describe LogParser do
     it 'prints players list' do
       expect(@json_data['players']).to eq(['Isgalamido', 'Dono da Bola', 'Mocinha', 'UnnamedPlayer'])
     end
-
-    it 'prints individual kills count ' do
-      expect(@json_data['kills']).to eq({ 'Isgalamido' => 3 })
-    end
-
-    it 'prints total kills' do
-      expect(@json_data['total_kills']).to eq(3)
-    end
   end
 end
