@@ -1,28 +1,53 @@
-require "json"
+# frozen_string_literal: true
+
+require 'json'
+# read and collect information of log.file
 class LogParser
+  KILL_LINE_REGEX = / \d{1,2}:\d{1,2} Kill: \d+ \d+ \d+: (.+) killed (.+) by .+/
+  USER_LINE_REGEX = / \d{1,2}:\d{1,2} ClientUserinfoChanged: \d+ n\\(.+)\\t\\\d+\\model/
   def initialize(file_path)
+    raise 'File not found' unless File.exist?(file_path)
+
     @file_path = file_path
-    raise "File not found" unless File.exists?(@file_path)
-    @file = File.open(@file_path)
-    @file_data = @file.readlines.map(&:chomp)
-    @file.close
+    @file_data = File.readlines(@file_path, chomp: true)
+    @players = []
   end
 
-  def get_first_line
-    first_line = @file_data[0]
+  def first_line
+    @file_data.first
   end
 
-  def get_log_data
-    data = {:lines => file_length}
-    '"%{file_name}": %{json}' % { file_name: file_name, json: JSON.pretty_generate(data) }
+  def log_data
+    @file_data.each do |line|
+      player_kills(line)
+      player_info(line)
+    end
+    data = { lines: file_length, players: @players.uniq }
+    format('"%<file_name>s": %<json>s', file_name:, json: JSON.pretty_generate(data))
   end
 
   private
+
   def file_length
     @file_data.length
   end
 
   def file_name
     File.basename(@file_path)
+  end
+
+  def player_kills(line)
+    return unless line.match(KILL_LINE_REGEX)
+
+    player_one = line[KILL_LINE_REGEX, 1]
+    player_two = line[KILL_LINE_REGEX, 2]
+    @players += [player_one, player_two].reject { |player| player == '<world>' }
+  end
+
+  def player_info(line)
+    return unless line.match(USER_LINE_REGEX)
+
+    player = line[USER_LINE_REGEX, 1]
+    @players.push(player)
   end
 end
