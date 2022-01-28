@@ -15,26 +15,37 @@ describe LogParser do
     end
   end
 
-  describe '#when file does not exist' do
-    context 'games.log does not exist' do
-      it 'print file not found' do
-        expect { LogParser.new('game.log') }.to raise_error('File not found')
-      end
+  context 'when file does not exist' do
+    it 'print file not found' do
+      expect { LogParser.new('game.log') }.to raise_error('File not found')
     end
   end
 
   describe '#log_data' do
-    context 'call print_log_data' do
-      it 'prints lines number' do
-        log_parser = LogParser.new('spec/fixtures/game_test.log')
-        output = log_parser.log_data
-        expect(output).to start_with('"game_test.log":')
-        json_data = JSON.parse(output[17, output.length - 1])
-        expect(json_data['lines']).to eq(52)
-        expect(json_data['players']).to eq(['Isgalamido', '<world>', 'Dono da Bola', 'Mocinha', 'UnnamedPlayer'])
-        expect(json_data['kills']).to eq({ '<world>' => 4, 'Isgalamido' => 3 })
-        expect(json_data['total_kills']).to eq(7)
-      end
+    before do
+      log_parser = LogParser.new('spec/fixtures/game_test.log')
+      @output = log_parser.log_data
+      @json_data = JSON.parse(@output[17, @output.length - 1])
+    end
+
+    it 'prints file name' do
+      expect(@output).to start_with('"game_test.log":')
+    end
+
+    it 'prints lines count' do
+      expect(@json_data['lines']).to eq(52)
+    end
+
+    it 'prints players list' do
+      expect(@json_data['players']).to eq(['Isgalamido', 'Dono da Bola', 'Mocinha', 'UnnamedPlayer'])
+    end
+
+    it 'prints individual kills count ' do
+      expect(@json_data['kills']).to eq({ 'Isgalamido' => 3 })
+    end
+
+    it 'prints total kills' do
+      expect(@json_data['total_kills']).to eq(3)
     end
   end
 end

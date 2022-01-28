@@ -3,28 +3,28 @@
 require 'json'
 # read and collect information of log.file
 class LogParser
+  KILL_LINE_REGEX = / \d{1,2}:\d{1,2} Kill: \d+ \d+ \d+: (.+) killed (.+) by .+/
+  USER_LINE_REGEX = / \d{1,2}:\d{1,2} ClientUserinfoChanged: \d+ n\\(.+)\\t\\\d+\\model/
   def initialize(file_path)
-    @file_path = file_path
-    raise 'File not found' unless File.exist?(@file_path)
+    raise 'File not found' unless File.exist?(file_path)
 
-    file = File.open(@file_path)
-    @file_data = file.readlines.map(&:chomp)
-    file.close
+    @file_path = file_path
+    @file_data = File.readlines(@file_path, chomp: true)
+    @players = []
+    @kills = {}
   end
 
   def first_line
-    @file_data[0]
+    @file_data.first
   end
 
   def log_data
-    players = []
-    kills = {}
     total_kills = 0
     @file_data.each do |line|
-      total_kills += player_kills(line, players, kills)
-      player_info(line, players)
+      total_kills += player_kills(line)
+      player_info(line)
     end
-    data = { lines: file_length, players: players.uniq, kills:, total_kills: }
+    data = { lines: file_length, players: @players.uniq, kills: @kills, total_kills: }
     format('"%<file_name>s": %<json>s', file_name:, json: JSON.pretty_generate(data))
   end
 
@@ -38,21 +38,22 @@ class LogParser
     File.basename(@file_path)
   end
 
-  def player_kills(line, players, kills)
-    return 0 unless line.match(/ \d{1,2}:\d{1,2} Kill: \d+ \d+ \d+: .+ killed .+by .+/)
+  def player_kills(line)
+    return 0 unless line.match(KILL_LINE_REGEX)
 
-    player_one = line[line.rindex(':') + 2..line.index('killed') - 2]
-    player_two = line[line.index('killed') + 7..line.rindex('by') - 2]
-    players.push(player_one)
-    players.push(player_two)
-    kills[player_one] = (kills[player_one] || 0) + 1
+    player_one = line[KILL_LINE_REGEX, 1]
+    player_two = line[KILL_LINE_REGEX, 2]
+    @players += [player_one, player_two].reject { |player| player == '<world>' }
+    return 0 unless player_one != '<world>'
+
+    @kills[player_one] = @kills.fetch(player_one, 0) + 1
     1
   end
 
-  def player_info(line, players)
-    return unless line.match(/ \d{1,2}:\d{1,2} ClientUserinfoChanged: \d+ n\\.+\\t\\\d+\\model/)
+  def player_info(line)
+    return unless line.match(USER_LINE_REGEX)
 
-    player = line[line.index('n\\') + 2..line.index('\\t') - 1]
-    players.push(player)
+    player = line[USER_LINE_REGEX, 1]
+    @players.push(player)
   end
 end
