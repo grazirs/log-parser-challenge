@@ -44,9 +44,11 @@ class LogParser
     player_one = line[KILL_LINE_REGEX, 1]
     player_two = line[KILL_LINE_REGEX, 2]
     @players += [player_one, player_two].reject { |player| player == '<world>' }
-    return 0 unless player_one != '<world>'
-
-    @kills[player_one] = @kills.fetch(player_one, 0) + 1
+    if player_one != '<world>'
+      @kills[player_one] = @kills.fetch(player_one, 0) + 1
+    else
+      @kills[player_two] = @kills.fetch(player_two, 0) - 1
+    end
     1
   end
 

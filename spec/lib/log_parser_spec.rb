@@ -41,11 +41,11 @@ describe LogParser do
     end
 
     it 'prints individual kills count ' do
-      expect(@json_data['kills']).to eq({ 'Isgalamido' => 3 })
+      expect(@json_data['kills']).to eq({ 'Isgalamido' => -1 })
     end
 
     it 'prints total kills' do
-      expect(@json_data['total_kills']).to eq(3)
+      expect(@json_data['total_kills']).to eq(7)
     end
   end
 end
